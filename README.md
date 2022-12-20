@@ -64,6 +64,31 @@ To trigger a transition, you can call the  `TriggerAsync` method and pass it the
 
 ` await stateMachine.LoadConfigFromFile("stateMap.json");`
 
+Where json content is like:
+
+```json
+{
+  "initialState":"Ready",
+  "stateDefinitions":[
+    {
+      "key":"Ready",
+      "transitions":[{"trigger":"Processing","nextState":"Process"}]
+    },
+    {
+      "key":"Process",
+      "transitions":[
+        {"trigger":"Success","nextState":"Result"},
+        {"trigger":"Failure","nextState":"Error"}]},
+    {
+      "key":"Error",
+      "transitions":[{"trigger":"Retry","nextState":"Process"}]},
+    {
+      "key":"Result",
+      "transitions":[{"trigger":"Finish","nextState":"Ready"}]
+    }]
+}
+```
+
 ## Examples
 
 For more detailed examples of how to use the async state machine, see the `StateMap_Example` class.
