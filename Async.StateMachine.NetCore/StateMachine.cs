@@ -1,4 +1,6 @@
-﻿public class AsyncStateMachine<TState, TEvent> where TState : notnull
+﻿using System.Text.Json;
+
+public class AsyncStateMachine<TState, TEvent> where TState : notnull
 {
     private readonly Dictionary<TState, Dictionary<TEvent, TState>> _transitions = new();
     private readonly Dictionary<TState, Func<Task>> _entryActions = new();
@@ -10,9 +12,20 @@
     {
         Setup(config);
     }
-
-    private void Setup(StateMachineConfig<TState, TEvent> config)
+    public async Task LoadConfigFromFile(string path)
     {
+
+        var config = JsonSerializer.Deserialize<StateMachineConfig<TState, TEvent>>(await File.ReadAllTextAsync(path), new JsonSerializerOptions()
+        {
+            PropertyNameCaseInsensitive = true
+        });
+        Setup(config);
+    }
+
+    public void Setup(StateMachineConfig<TState, TEvent> config)
+    {
+        if (config == null)
+            throw new Exception("Config cannot be null when creating StateMachine");
         CurrentState = config.InitialState;
 
         foreach (var state in config.StateDefinitions)
@@ -33,7 +46,7 @@
             }
     }
 
-    public async Task<TState>  ProcessEvent(TEvent trigger)
+    public async Task<TState>  TriggerAsync(TEvent trigger)
     {
         if (!_transitions.TryGetValue(CurrentState, out var triggers)
             || !triggers.TryGetValue(trigger, out var nexState))
@@ -68,5 +81,7 @@
     {
         _exitActions.Add(state, action);
     }
+
+    
 }
 

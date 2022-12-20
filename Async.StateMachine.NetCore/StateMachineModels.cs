@@ -1,24 +1,10 @@
-﻿public class StateMachineConfig<TState, TEvent>
-{
-    public TState InitialState { get; set; }
-    public List<State<TState, TEvent>> StateDefinitions { get; set; }
-    public ActionConfig<TState>[]? EntryActions { get; set; }
-    public ActionConfig<TState>[]? ExitActions { get; set; }
-}
-
-public class State<TState, TEvent>
-{
-    public TState Key { get; set; }
-    public List<Transition<TState, TEvent>> Transitions { get; set; }
-}
-
-public class Transition<TState, TEvent>
-{
-    public TEvent Trigger { get; set; }
-    public TState NextState { get; set; }
-}
-public class ActionConfig<TState>
-{
-    public TState State { get; set; }
-    public Func<Task> Action { get; set; }
-}
+﻿public record StateMachineConfig<TState, TEvent>
+(
+   TState InitialState,
+   List<State<TState, TEvent>> StateDefinitions,
+   ActionConfig<TState>[]? EntryActions,
+   ActionConfig<TState>[]? ExitActions
+);
+public record State<TState, TEvent>(TState Key, List<Transition<TState, TEvent>> Transitions);
+public record Transition<TState, TEvent>(TEvent Trigger, TState NextState);
+public record ActionConfig<TState>(TState State,Func<Task> Action);

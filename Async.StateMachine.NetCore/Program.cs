@@ -1,19 +1,12 @@
-﻿using System.Text.Json;
+﻿var stateMachine = new AsyncStateMachine<string, string>();
 
-var statesConfig = JsonSerializer.Deserialize<StateMachineConfig<string, string>>(await File.ReadAllTextAsync("stateMap.json"), new JsonSerializerOptions()
-{
-    PropertyNameCaseInsensitive = true
-});
-if (statesConfig != null)
-{
-    var stateMachine = new AsyncStateMachine<string, string>(statesConfig);
+await stateMachine.LoadConfigFromFile("stateMap.json");
 
-    PrintState(stateMachine.CurrentState);
-    PrintState(await stateMachine.ProcessEvent("Processing"));
-    PrintState(await stateMachine.ProcessEvent("Success"));
-    PrintState(await stateMachine.ProcessEvent("Finish"));
-    PrintState(await stateMachine.ProcessEvent("Failure")); //Throw as the event is not allowed on Ready state
-}
+PrintState(stateMachine.CurrentState);
+PrintState(await stateMachine.TriggerAsync("Processing"));
+PrintState(await stateMachine.TriggerAsync("Success"));
+PrintState(await stateMachine.TriggerAsync("Finish"));
+PrintState(await stateMachine.TriggerAsync("Failure")); //Throw as the event is not allowed on Ready state
 
 Console.Read();
 
