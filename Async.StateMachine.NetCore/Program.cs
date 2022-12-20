@@ -14,11 +14,13 @@ void PrintState(string state)
 {
     Console.WriteLine($"Machine Current State: {state}");
 }
-//----------------------OUTPUT-------------------------------
+
+
 /*
+ ----------------------OUTPUT-------------------------------:
 Machine Current State: Ready
 Machine Current State: Process
 Machine Current State: Result
 Machine Current State: Ready
-Unhandled exception. System.Exception: 'Failure' Event is not supported!
- */
+Unhandled exception. System.Exception: 'Failure' Event is not supported on current state: 'Ready'.
+*/

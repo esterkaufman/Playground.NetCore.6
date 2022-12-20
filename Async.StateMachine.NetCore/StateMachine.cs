@@ -7,11 +7,7 @@ public class AsyncStateMachine<TState, TEvent> where TState : notnull
     private readonly Dictionary<TState, Func<Task>> _exitActions = new();
 
     public TState CurrentState { get; private set; }
-
-    public AsyncStateMachine(StateMachineConfig<TState, TEvent> config)
-    {
-        Setup(config);
-    }
+    
     public async Task LoadConfigFromFile(string path)
     {
 
@@ -51,7 +47,7 @@ public class AsyncStateMachine<TState, TEvent> where TState : notnull
         if (!_transitions.TryGetValue(CurrentState, out var triggers)
             || !triggers.TryGetValue(trigger, out var nexState))
         {
-            throw new Exception($"'{trigger}' Event is not supported!");
+            throw new Exception($"'{trigger}' Event is not supported on current state: '{CurrentState}'.");
         }
 
         // Invoke exit on current state
